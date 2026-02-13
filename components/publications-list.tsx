@@ -86,6 +86,11 @@ export function PublicationsList({ publications }: { publications: PublicationEn
                   PDF
                 </a>
               )}
+              {item.links.docx && (
+                <a href={item.links.docx} target="_blank" rel="noreferrer">
+                  DOCX
+                </a>
+              )}
               {item.links.code && (
                 <a href={item.links.code} target="_blank" rel="noreferrer">
                   Code
