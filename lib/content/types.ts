@@ -29,6 +29,7 @@ export type PublicationEntry = {
     doi?: string;
     arxiv?: string;
     pdf?: string;
+    docx?: string;
     code?: string;
   };
   highlight: boolean;
