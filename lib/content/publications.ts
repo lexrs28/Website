@@ -6,17 +6,6 @@ import type { PublicationEntry } from "@/lib/content/types";
 
 const PUBLICATIONS_DIR = path.join(process.cwd(), "content", "publications");
 
-function isValidLink(value: string): boolean {
-  if (value.startsWith("/")) {
-    return true;
-  }
-  return z.string().url().safeParse(value).success;
-}
-
-const linkSchema = z.string().refine(isValidLink, {
-  message: "Expected an absolute URL or a root-relative path"
-});
-
 const publicationSchema = z.object({
   title: z.string().min(1),
   authors: z.array(z.string()).min(1),
@@ -25,11 +14,10 @@ const publicationSchema = z.object({
   type: z.enum(["journal", "conference", "preprint", "thesis", "workshop"]),
   links: z
     .object({
-      doi: linkSchema.optional(),
-      arxiv: linkSchema.optional(),
-      pdf: linkSchema.optional(),
-      docx: linkSchema.optional(),
-      code: linkSchema.optional()
+      doi: z.string().url().optional(),
+      arxiv: z.string().url().optional(),
+      pdf: z.string().url().optional(),
+      code: z.string().url().optional()
     })
     .default({}),
   highlight: z.boolean().default(false),
