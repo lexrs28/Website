@@ -107,3 +107,45 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 - Prefer setting `NEXT_PUBLIC_SITE_URL` for production canonical URL control.
 - Replace `public/cv-placeholder.pdf` with your actual CV.
+
+## Current Project State (February 13, 2026)
+
+- Local development, tests, and production build pass.
+- GitHub remote is configured via SSH:
+  - `git@github.com:lexrs28/Website.git`
+- `main` is pushed and tracking `origin/main`.
+- Theme system is implemented with:
+  - light/dark toggle
+  - persisted preference via `localStorage` key `site-theme`
+  - root attribute switching via `data-theme`
+- Canonical URL resolution is environment-aware in `lib/site.ts`.
+
+## Troubleshooting Log
+
+### GitHub push failed with "Invalid username or token"
+
+Cause:
+- GitHub does not allow password authentication for Git over HTTPS.
+
+Resolution used:
+1. Load local SSH key (`~/.ssh/id_rsa`) into ssh-agent.
+2. Add public key to GitHub SSH keys.
+3. Switch remote from HTTPS to SSH:
+   - `git remote set-url origin git@github.com:lexrs28/Website.git`
+4. Push normally:
+   - `git push -u origin main`
+
+### Vercel build failed: vulnerable `next-mdx-remote@5.0.0`
+
+Cause:
+- Vercel blocked deploy due to CVE advisory requiring v6+.
+
+Resolution used:
+1. Upgraded dependency:
+   - `next-mdx-remote` from `^5.0.0` to `^6.0.0`
+2. Regenerated lockfile with install.
+3. Verified:
+   - `npm run typecheck`
+   - `npm run test`
+   - `npm run build`
+4. Merged hotfix to `main` and pushed.
