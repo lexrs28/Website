@@ -1,10 +1,9 @@
 import fs from "node:fs/promises";
+import type { Dirent } from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
 import type { PublicationEntry } from "@/lib/content/types";
-
-const PUBLICATIONS_DIR = path.join(process.cwd(), "content", "publications");
 
 function isValidLink(value: string): boolean {
   if (value.startsWith("/")) {
@@ -43,24 +42,56 @@ function comparePublications(a: PublicationEntry, b: PublicationEntry): number {
   return a.title.localeCompare(b.title);
 }
 
-export async function getAllPublications(): Promise<PublicationEntry[]> {
-  const entries = await fs.readdir(PUBLICATIONS_DIR, { withFileTypes: true });
-  const files = entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".mdx"))
-    .map((entry) => entry.name);
+export type PublicationsContentLoaderOptions = {
+  publicationsDir?: string;
+};
 
-  const items = await Promise.all(
-    files.map(async (fileName) => {
-      const source = await fs.readFile(path.join(PUBLICATIONS_DIR, fileName), "utf8");
-      const { data, content } = matter(source);
-      const parsed = publicationSchema.parse(data);
-      return {
-        ...parsed,
-        slug: parsed.slug ?? fileName.replace(/\.mdx$/, ""),
-        content
-      } satisfies PublicationEntry;
-    })
-  );
-
-  return items.sort(comparePublications);
+function resolvePublicationsDir(publicationsDir?: string): string {
+  return publicationsDir ?? path.join(process.cwd(), "content", "publications");
 }
+
+export function createPublicationsContentLoader(
+  options: PublicationsContentLoaderOptions = {}
+): {
+  getAllPublications: () => Promise<PublicationEntry[]>;
+} {
+  const publicationsDir = resolvePublicationsDir(options.publicationsDir);
+
+  async function getAllPublications(): Promise<PublicationEntry[]> {
+    let entries: Dirent[];
+    try {
+      entries = await fs.readdir(publicationsDir, { withFileTypes: true });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+        return [];
+      }
+      throw error;
+    }
+    const files = entries
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".mdx"))
+      .map((entry) => entry.name);
+
+    const items = await Promise.all(
+      files.map(async (fileName) => {
+        const source = await fs.readFile(path.join(publicationsDir, fileName), "utf8");
+        const { data, content } = matter(source);
+        const parsed = publicationSchema.parse(data);
+        return {
+          ...parsed,
+          slug: parsed.slug ?? fileName.replace(/\.mdx$/, ""),
+          content
+        } satisfies PublicationEntry;
+      })
+    );
+
+    return items.sort(comparePublications);
+  }
+
+  return {
+    getAllPublications
+  };
+}
+
+const defaultPublicationsLoader = createPublicationsContentLoader();
+
+export const getAllPublications = defaultPublicationsLoader.getAllPublications;
