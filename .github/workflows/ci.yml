@@ -7,6 +7,7 @@ on:
 
 jobs:
   validate:
+    name: validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,14 +22,5 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Test
-        run: npm run test
-
-      - name: Build
-        run: npm run build
+      - name: Verify quality gates
+        run: npm run verify
