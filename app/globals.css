@@ -154,6 +154,10 @@ a:focus-visible {
   flex-wrap: wrap;
 }
 
+.nav-list > li {
+  position: relative;
+}
+
 .nav-list a {
   color: var(--text);
   opacity: 0.88;
@@ -164,6 +168,59 @@ a:focus-visible {
 .nav-list a:focus-visible {
   opacity: 1;
   color: var(--accent-strong);
+}
+
+.nav-dropdown-trigger {
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  opacity: 0.88;
+  font-size: 0.95rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-dropdown-trigger:hover,
+.nav-dropdown-trigger:focus-visible {
+  opacity: 1;
+  color: var(--accent-strong);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  min-width: 9rem;
+  list-style: none;
+  margin: 0;
+  padding: 0.45rem;
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
+  z-index: 30;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.nav-dropdown-menu a {
+  display: block;
+  padding: 0.22rem 0.38rem;
+  border-radius: 0.35rem;
+  white-space: nowrap;
 }
 
 .main-content {
@@ -313,6 +370,11 @@ button {
 
   .nav-list {
     gap: 0.65rem 1rem;
+  }
+
+  .nav-dropdown-menu {
+    right: auto;
+    left: 0;
   }
 
   .main-content {

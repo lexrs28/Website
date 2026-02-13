@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-const navItems = [
+const primaryNavItems = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/cv", label: "CV" },
-  { href: "/publications", label: "Publications" },
-  { href: "/projects", label: "Projects" },
   { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" }
+  { href: "/projects", label: "Projects" },
+  { href: "/publications", label: "Publications" }
+];
+
+const secondaryNavItems = [
+  { href: "/contact", label: "Contact" },
+  { href: "/about", label: "About" },
+  { href: "/cv", label: "CV" }
 ];
 
 export function SiteHeader() {
@@ -23,11 +26,23 @@ export function SiteHeader() {
         </div>
         <nav aria-label="Primary navigation" className="primary-nav">
           <ul className="nav-list">
-            {navItems.map((item) => (
+            {primaryNavItems.map((item) => (
               <li key={item.href}>
                 <Link href={item.href}>{item.label}</Link>
               </li>
             ))}
+            <li className="nav-dropdown">
+              <button type="button" className="nav-dropdown-trigger" aria-haspopup="true">
+                More
+              </button>
+              <ul className="nav-dropdown-menu" aria-label="More pages">
+                {secondaryNavItems.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href}>{item.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
           </ul>
         </nav>
       </div>
