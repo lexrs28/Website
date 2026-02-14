@@ -4,6 +4,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const primaryNavItems = [
   { href: "/", label: "Home" },
   { href: "/blog", label: "Blog" },
+  { href: "/experiments/dictator-game", label: "Experiments" },
   { href: "/projects", label: "Projects" },
   { href: "/publications", label: "Publications" }
 ];

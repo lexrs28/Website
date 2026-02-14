@@ -9,12 +9,15 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "verify": "npm run lint && npm run typecheck && npm run test && npm run build"
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "db:migrate": "node scripts/db/migrate.mjs",
+    "db:migrate:check": "node scripts/db/migrate.mjs --check"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
     "next": "^15.1.6",
     "next-mdx-remote": "^6.0.0",
+    "postgres": "^3.4.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "remark-gfm": "^4.0.1",

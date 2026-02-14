@@ -343,7 +343,8 @@ a:focus-visible {
 }
 
 select,
-button {
+button,
+input {
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 0.45rem 0.62rem;
@@ -356,6 +357,54 @@ button {
   gap: 0.8rem;
   flex-wrap: wrap;
   margin-top: 0.3rem;
+}
+
+.experiment-shell {
+  gap: 1rem;
+}
+
+.experiment-cta {
+  gap: 0.75rem;
+}
+
+.experiment-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.experiment-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.experiment-form input,
+.experiment-form select {
+  width: 100%;
+}
+
+.honeypot-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form-message {
+  font-size: 0.92rem;
+  color: color-mix(in srgb, var(--accent-strong) 75%, var(--text));
+}
+
+.form-message-error {
+  color: #a11f2b;
 }
 
 @media (max-width: 760px) {

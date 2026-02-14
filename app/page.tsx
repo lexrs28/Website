@@ -50,6 +50,18 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      <section className="card experiment-cta">
+        <p className="eyebrow">Participate</p>
+        <h2>Dictator Game Experiment</h2>
+        <p>
+          Contribute one anonymous response to a $100 split decision plus demographics. We use this as a lightweight
+          data hook for testing behavioral ideas.
+        </p>
+        <p>
+          <Link href="/experiments/dictator-game">Open the experiment</Link>
+        </p>
+      </section>
     </div>
   );
 }
