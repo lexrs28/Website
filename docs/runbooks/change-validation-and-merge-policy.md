@@ -25,6 +25,35 @@ npm run verify
 5. Confirm all required checks are green.
 6. Merge via squash.
 
+## Solo Quick-Run Procedure
+1. Sync local main:
+
+```bash
+git checkout main
+git pull --ff-only
+```
+
+2. Create branch:
+
+```bash
+git switch -c feat/<short-change-name>
+```
+
+3. Edit files.
+4. Run the single local gate:
+
+```bash
+npm run verify
+```
+
+5. Push and open PR:
+
+```bash
+git push -u origin feat/<short-change-name>
+```
+
+6. Merge your own PR after required checks are green.
+
 ## Validation Scope
 `npm run verify` runs:
 1. `npm run lint`
@@ -36,6 +65,21 @@ npm run verify
 - Integration smoke tests may read real repo content but must not assume fixed slugs or counts.
 - Fixture tests should assert edge cases using isolated directories under `tests/fixtures/`.
 - New loader or schema logic must include at least one success case and one failure case.
+
+## Content-Only Update Recipe
+Use this for publication/blog edits that do not change app logic.
+
+1. Edit MDX files in:
+  - `content/publications/*.mdx`
+  - `content/blog/*.mdx`
+2. For homepage featured publications, set `highlight: true` in the publication frontmatter.
+3. Run:
+
+```bash
+npm run verify
+```
+
+4. Open self-PR and merge when required checks pass.
 
 ## Rollback Procedure
 1. If a regression merges, create a dedicated recovery branch from `main`.

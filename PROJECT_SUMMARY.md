@@ -16,6 +16,12 @@ This project is a personal academic website built with Next.js and TypeScript. I
 ## Scope Implemented
 
 - App routes: `/`, `/about`, `/cv`, `/publications`, `/projects`, `/blog`, `/blog/[slug]`, `/contact`, `/experiments/dictator-game`
+- Homepage identity/layout refresh:
+  - personal name moved from header into hero box
+  - streamlined header branding area with theme toggle retained
+- Featured publication curation method:
+  - controlled by publication `highlight` flags
+  - deterministic priority for selected working papers on homepage
 - Dictator experiment:
   - client form with demographics and amount selection
   - per-session duplicate prevention via cookie
@@ -36,6 +42,12 @@ This project is a personal academic website built with Next.js and TypeScript. I
 - Migrations: SQL files + Node migration runner
 - Validation: Zod
 - Tests: Vitest (schema, service, API, sitemap)
+
+## Why These Homepage Changes
+
+- improves first-screen visual hierarchy by placing identity in the hero
+- makes featured-paper updates simpler for solo maintenance
+- preserves operational safety through the existing protected-branch workflow
 
 ## Deployment Requirements
 
