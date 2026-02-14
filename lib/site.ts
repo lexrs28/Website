@@ -20,9 +20,9 @@ function resolveSiteUrl(): string {
 
 export const siteConfig = {
   name: "Dr. Robert Smith",
-  title: "Dr. Robert Smith | Research and Writing",
+  title: "Dr. Robert Smith | Blood Donation and Prosocial Behavior Research",
   description:
-    "Academic website and blog with publications, projects, and essays on research and practice.",
+    "Academic website featuring research on blood donor behavior, intertemporal altruism, and donor recruitment and retention.",
   url: resolveSiteUrl(),
   author: "Robert Smith",
   email: "robert [at] example [dot] edu",

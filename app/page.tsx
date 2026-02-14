@@ -8,6 +8,18 @@ const prioritizedFeaturedSlugs = [
   "who-starts-and-who-stays-behavioral-economic-correlates"
 ] as const;
 const featuredOrder = new Map<string, number>(prioritizedFeaturedSlugs.map((slug, index) => [slug, index]));
+const firstAuthoredHighlights = [
+  {
+    title: "Intertemporal Altruism",
+    detail:
+      "A pre-registered experiment (N=361, UK) found strong preference for helping sooner: 72% chose earlier volunteering appointments at one month and 77% at six months."
+  },
+  {
+    title: "Who Starts and Who Stays?",
+    detail:
+      "Across a general population sample and NHS Blood and Transplant donor data (N=1,053 and N=2,806), altruism, trust, and risk tolerance were linked to donor status, while patience and altruism were linked to donor retention."
+  }
+] as const;
 
 export default async function HomePage() {
   const [posts, publications] = await Promise.all([getPublishedBlogPosts(), getAllPublications()]);
@@ -38,9 +50,24 @@ export default async function HomePage() {
         <p className="hero-name">Dr. Robert Smith</p>
         <h1>Research, Publications, and Notes</h1>
         <p>
-          I study human-centered systems, publish across AI and design, and share practical writing from active
-          projects.
+          I study blood donor behavior and intertemporal altruism, with a focus on why people start donating, stay
+          active, and choose to help now versus later.
         </p>
+      </section>
+
+      <section>
+        <div className="section-head">
+          <h2>First-Authored Findings</h2>
+          <Link href="/about">More context</Link>
+        </div>
+        <ul className="stack-list">
+          {firstAuthoredHighlights.map((item) => (
+            <li key={item.title} className="card publication-card">
+              <h3>{item.title}</h3>
+              <p>{item.detail}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section>
