@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import Link from "next/link";
 
 const primaryNavItems = [
   { href: "/", label: "Home" },
@@ -20,9 +20,6 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="container nav-wrap">
         <div className="brand-row">
-          <Link href="/" className="site-title">
-            Robert Smith
-          </Link>
           <ThemeToggle />
         </div>
         <nav aria-label="Primary navigation" className="primary-nav">

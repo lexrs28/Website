@@ -8,6 +8,18 @@ Last updated: February 14, 2026
 - Current branch focus: `feat/dictator-game-capture`.
 - Runtime objective: capture anonymous dictator-game responses with demographics into Postgres.
 
+## Homepage UX Decision
+
+- Header no longer shows personal name text.
+- Identity anchor is now in the homepage hero (`Dr. Robert Smith`).
+- Front-page featured papers are controlled by publication `highlight` flags, with deterministic priority for:
+  - `intertemporal-altruism-temporal-preferences-prosocial-behavior`
+  - `who-starts-and-who-stays-behavioral-economic-correlates`
+
+Reason:
+- clearer visual hierarchy on first load
+- simple content-side curation without code changes for most future updates
+
 ## New Capability: Dictator Game Capture
 
 - Public route: `/experiments/dictator-game`
@@ -50,6 +62,12 @@ npm run db:migrate:check
 - Optional env var:
   - `DICTATOR_EXPERIMENT_SLUG`
 - Export CSV intentionally excludes raw user-agent for lower re-identification risk.
+- Solo maintenance model stays PR-first (protected `main`) with a fast self-PR path:
+  - branch
+  - edit
+  - `npm run verify`
+  - push/open PR
+  - merge when required checks pass
 
 ## Key References
 

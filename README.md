@@ -80,6 +80,54 @@ NEXT_PUBLIC_SITE_URL=https://<your-domain-or-vercel-url>
 - `npm run db:migrate` - apply SQL migrations
 - `npm run db:migrate:check` - show pending migrations (non-zero exit if pending)
 
+## Homepage Curation
+
+- Homepage featured papers are controlled via `highlight: true` in `content/publications/*.mdx`.
+- Current priority on `/` is pinned to:
+  - `intertemporal-altruism-temporal-preferences-prosocial-behavior`
+  - `who-starts-and-who-stays-behavioral-economic-correlates`
+- Identity placement was intentionally moved from the header into the homepage hero box to improve visual hierarchy.
+
+Why this approach:
+- content curation stays simple (flip frontmatter flags)
+- homepage editing remains low-friction
+- no API or database changes are required for featured-paper updates
+
+## Solo Maintenance Quick Flow
+
+1. Sync `main`:
+
+```bash
+git checkout main
+git pull --ff-only
+```
+
+2. Create a branch:
+
+```bash
+git switch -c feat/<short-change-name>
+```
+
+3. Make edits.
+4. Run local gate:
+
+```bash
+npm run verify
+```
+
+5. Push and open your PR:
+
+```bash
+git push -u origin feat/<short-change-name>
+```
+
+6. Merge your own PR after required checks pass (`CI / validate` + Vercel preview).
+
+Why this workflow:
+- keeps solo updates fast
+- preserves CI/deploy safety
+- keeps rollback straightforward via `git revert`
+
 ## Delivery Policy
 
 - `main` is PR-only.
