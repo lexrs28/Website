@@ -1,151 +1,126 @@
-# Academic Website + Blog (Next.js + Vercel)
+# Academic Website (Next.js + TypeScript + Vercel)
 
-This project is a personal academic website and blog built with Next.js App Router and TypeScript.
+Personal academic website with profile pages, publication index, optional MDX blog, and Vercel-ready deployment.
+
+## Current Status (February 13, 2026)
+
+- `main` is active and synced to GitHub (`git@github.com:lexrs28/Website.git`).
+- Publication system is live with MDX metadata plus downloadable PDF/DOCX assets.
+- Blog system is implemented, but `content/blog/` currently has no post files.
+- Local baseline check: `npm run verify`.
 
 ## Features
 
-- Academic profile pages: About, CV, Publications, Projects, Contact.
-- Blog with MDX content in repo.
-- Draft post filtering in production.
-- SEO metadata, sitemap, robots, and RSS feed.
-- Publication filtering by type and year.
-- CI checks for lint, typecheck, test, and build.
+- Routes: `/`, `/about`, `/cv`, `/publications`, `/projects`, `/blog`, `/blog/[slug]`, `/contact`
+- Publication listing with filters by `type` and `year`
+- Publication links: `doi`, `arxiv`, `pdf`, `docx`, `code`
+- MDX content pipeline for blog and publications
+- SEO infrastructure: metadata, sitemap, robots, RSS
+- CI quality gate: lint, typecheck, test, build
 
-## Quick Start
+## Tech Stack
 
-1. Install dependencies:
+- Next.js App Router
+- TypeScript
+- React
+- `gray-matter`
+- `zod`
+- `next-mdx-remote` v6
+- Vitest
 
-```bash
-npm install
-```
+## Repository Layout
 
-2. Start development server:
-
-```bash
-npm run dev
-```
-
-3. Open `http://localhost:3000`.
-
-### Local Play Loop
-
-Use this rapid iteration loop while developing:
-
-```bash
-npm run dev
-npm run test
-npm run build
+```text
+app/                  # Routes and page modules
+components/           # UI components
+content/              # MDX content sources
+  blog/               # Blog posts (.mdx)
+  publications/       # Publication metadata entries (.mdx)
+lib/                  # Content loaders and site config
+docs/                 # Runbooks and incident notes
+public/               # Static downloadable assets
+tests/                # Vitest suites and fixtures
 ```
 
 ## Content Authoring
 
-- Blog posts: `content/blog/*.mdx`
-- Publications: `content/publications/*.mdx`
+### Blog posts
 
-### Blog frontmatter
+Path: `content/blog/*.mdx`
 
 ```yaml
+---
 title: "Post title"
 date: "2026-01-01"
 summary: "Short summary"
 tags: ["tag"]
 draft: false
 slug: "optional-custom-slug"
+---
 ```
 
-### Publication frontmatter
+### Publication entries
+
+Path: `content/publications/*.mdx`
 
 ```yaml
+---
 title: "Paper title"
 authors: ["Author One", "Author Two"]
-venue: "Conference or Journal"
-year: 2025
-type: "conference"
+venue: "Journal or Conference"
+year: 2026
+type: "journal"
 links:
   doi: "https://doi.org/..."
-  pdf: "https://..."
+  arxiv: "https://arxiv.org/abs/..."
+  pdf: "/publications/example.pdf"
+  docx: "/publications/example.docx"
+  code: "https://github.com/org/repo"
 highlight: false
+---
 ```
+
+Notes:
+- Publication links accept absolute URLs and root-relative paths.
+- Files in `public/publications/` are served as `/publications/<filename>`.
 
 ## Commands
 
-- `npm run dev` - start local server.
-- `npm run lint` - run ESLint.
-- `npm run typecheck` - run TypeScript checks.
-- `npm run test` - run test suite.
-- `npm run build` - production build.
+- `npm run dev` - local development server
+- `npm run lint` - ESLint checks
+- `npm run typecheck` - TypeScript checks
+- `npm run test` - Vitest suite
+- `npm run build` - production build
+- `npm run verify` - required local quality gate (`lint + typecheck + test + build`)
 
-## Vercel Deployment
+## Delivery Policy
 
-1. Push this repository to GitHub.
-2. Import the repo in Vercel.
-3. Keep default build settings for Next.js.
-4. Deploy to temporary `*.vercel.app` domain.
-5. Later, attach your custom domain in Vercel project settings.
+- `main` is PR-only.
+- Required checks before merge:
+  - `CI / validate`
+  - Vercel preview/deploy check
+- Required merge behavior:
+  - branch up to date
+  - stale approvals dismissed on new commits
+  - squash merge preferred
 
-### Protected Preview Before Custom Domain
+Detailed policy and setup steps:
+- `docs/runbooks/change-validation-and-merge-policy.md`
 
-1. In Vercel, open your project settings and enable deployment protection/password access for preview (or all) deployments.
-2. Share the protected `*.vercel.app` URL only with selected testers.
-3. Keep your custom domain for a later phase.
+Incident reference:
+- `docs/incidents/2026-02-13-commit-ci-regression.md`
 
-### Canonical URL Configuration
+## Deployment (Vercel)
 
-This app resolves `siteConfig.url` from environment values in this order:
-
-1. `NEXT_PUBLIC_SITE_URL`
-2. `VERCEL_URL`
-3. fallback: `https://example-academic-site.vercel.app`
-
-For local development, optionally set:
+1. Push branch and open PR.
+2. Merge only after required checks pass.
+3. Configure:
 
 ```bash
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=https://<your-domain-or-vercel-url>
 ```
 
-## Notes
-
-- Prefer setting `NEXT_PUBLIC_SITE_URL` for production canonical URL control.
-- Replace `public/cv-placeholder.pdf` with your actual CV.
-
-## Current Project State (February 13, 2026)
-
-- Local development, tests, and production build pass.
-- GitHub remote is configured via SSH:
-  - `git@github.com:lexrs28/Website.git`
-- `main` is pushed and tracking `origin/main`.
-- Theme system is implemented with:
-  - light/dark toggle
-  - persisted preference via `localStorage` key `site-theme`
-  - root attribute switching via `data-theme`
-- Canonical URL resolution is environment-aware in `lib/site.ts`.
-
-## Troubleshooting Log
-
-### GitHub push failed with "Invalid username or token"
-
-Cause:
-- GitHub does not allow password authentication for Git over HTTPS.
-
-Resolution used:
-1. Load local SSH key (`~/.ssh/id_rsa`) into ssh-agent.
-2. Add public key to GitHub SSH keys.
-3. Switch remote from HTTPS to SSH:
-   - `git remote set-url origin git@github.com:lexrs28/Website.git`
-4. Push normally:
-   - `git push -u origin main`
-
-### Vercel build failed: vulnerable `next-mdx-remote@5.0.0`
-
-Cause:
-- Vercel blocked deploy due to CVE advisory requiring v6+.
-
-Resolution used:
-1. Upgraded dependency:
-   - `next-mdx-remote` from `^5.0.0` to `^6.0.0`
-2. Regenerated lockfile with install.
-3. Verified:
-   - `npm run typecheck`
-   - `npm run test`
-   - `npm run build`
-4. Merged hotfix to `main` and pushed.
+Site URL resolution in `lib/site.ts`:
+1. `NEXT_PUBLIC_SITE_URL`
+2. `VERCEL_URL`
+3. `https://example-academic-site.vercel.app`
