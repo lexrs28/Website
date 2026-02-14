@@ -2,7 +2,16 @@ import type { MetadataRoute } from "next";
 import { getPublishedBlogPosts } from "@/lib/content/blog";
 import { siteConfig } from "@/lib/site";
 
-const staticRoutes = ["/", "/about", "/cv", "/publications", "/projects", "/blog", "/contact"];
+const staticRoutes = [
+  "/",
+  "/about",
+  "/cv",
+  "/publications",
+  "/projects",
+  "/blog",
+  "/contact",
+  "/experiments/dictator-game"
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getPublishedBlogPosts();

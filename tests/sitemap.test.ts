@@ -9,5 +9,6 @@ describe("sitemap", () => {
     expect(urls).toContain("https://example-academic-site.vercel.app/");
     expect(urls).toContain("https://example-academic-site.vercel.app/blog");
     expect(urls).toContain("https://example-academic-site.vercel.app/publications");
+    expect(urls).toContain("https://example-academic-site.vercel.app/experiments/dictator-game");
   });
 });
