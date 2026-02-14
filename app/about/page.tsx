@@ -10,12 +10,11 @@ export default function AboutPage() {
     <article className="prose">
       <h1>About</h1>
       <p>
-        I am an academic researcher focused on human-centered machine learning, interpretability, and practical
-        systems for real-world deployment.
+        I am an academic researcher focused on cooperation and prosociality. My work focuses on behavioural economics and how prosocial choices overtime manifest. 
+        This work strives to deliver real-world impact.
       </p>
       <p>
-        My work bridges empirical research and engineering practice, with a focus on how tools are actually used in
-        high-stakes environments.
+        My work bridges theory and application. If you're interested in working with me, please reach out via the contact page.
       </p>
     </article>
   );
