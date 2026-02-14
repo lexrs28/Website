@@ -13,6 +13,10 @@ export default async function PublicationsPage() {
   return (
     <div className="page-stack">
       <h1>Publications</h1>
+      <p>
+        This work centers on first-authored studies of blood donor behavior, including intertemporal altruism and
+        behavioral-economic predictors of donor initiation and retention.
+      </p>
       <PublicationsList publications={publications} />
     </div>
   );
