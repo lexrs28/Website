@@ -3,16 +3,39 @@ import { PostCard } from "@/components/post-card";
 import { getPublishedBlogPosts } from "@/lib/content/blog";
 import { getAllPublications } from "@/lib/content/publications";
 
+const prioritizedFeaturedSlugs = [
+  "intertemporal-altruism-temporal-preferences-prosocial-behavior",
+  "who-starts-and-who-stays-behavioral-economic-correlates"
+] as const;
+const featuredOrder = new Map<string, number>(prioritizedFeaturedSlugs.map((slug, index) => [slug, index]));
+
 export default async function HomePage() {
   const [posts, publications] = await Promise.all([getPublishedBlogPosts(), getAllPublications()]);
 
   const latestPosts = posts.slice(0, 3);
-  const selectedPapers = publications.filter((item) => item.highlight).slice(0, 3);
+  const selectedPapers = publications
+    .filter((item) => item.highlight)
+    .sort((a, b) => {
+      const normalizedAPriority = featuredOrder.get(a.slug) ?? Number.POSITIVE_INFINITY;
+      const normalizedBPriority = featuredOrder.get(b.slug) ?? Number.POSITIVE_INFINITY;
+
+      if (normalizedAPriority !== normalizedBPriority) {
+        return normalizedAPriority - normalizedBPriority;
+      }
+
+      if (b.year !== a.year) {
+        return b.year - a.year;
+      }
+
+      return a.title.localeCompare(b.title);
+    })
+    .slice(0, 3);
 
   return (
     <div className="page-stack">
       <section className="hero">
         <p className="eyebrow">Academic Website</p>
+        <p className="hero-name">Dr. Robert Smith</p>
         <h1>Research, Publications, and Notes</h1>
         <p>
           I study human-centered systems, publish across AI and design, and share practical writing from active

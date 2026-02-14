@@ -113,14 +113,7 @@ a:focus-visible {
 .brand-row {
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
-}
-
-.site-title {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--text);
+  gap: 0;
 }
 
 .theme-toggle {
@@ -256,12 +249,20 @@ a:focus-visible {
 
 .hero h1 {
   font-size: clamp(2rem, 5vw, 3rem);
-  margin-top: 0.4rem;
+  margin-top: 0.2rem;
   margin-bottom: 0.8rem;
 }
 
 .hero p {
   max-width: 52ch;
+}
+
+.hero-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-top: 0.25rem;
 }
 
 .eyebrow {
