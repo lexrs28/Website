@@ -1,58 +1,52 @@
 # Project Summary: Academic Website
 
-Last updated: February 13, 2026
+Last updated: February 14, 2026
 
 ## Overview
 
-This project is a personal academic website built with Next.js and TypeScript. It provides publication-first content management, optional blog publishing through MDX, and automated quality/deploy checks via GitHub + Vercel.
+This project is a personal academic website built with Next.js and TypeScript. It now includes a behavioral experiment hook (`/experiments/dictator-game`) that captures anonymous submissions into Postgres and supports token-protected CSV export.
 
 ## Objectives
 
-- Present academic profile information across core pages (`about`, `cv`, `projects`, `contact`).
-- Maintain a structured publication archive with internal and external links.
-- Support blog publishing from version-controlled MDX files.
-- Keep release quality controlled by required checks and documented process.
+- Present academic profile information across core pages.
+- Maintain publication/blog content pipelines.
+- Capture lightweight behavioral experiment data for exploratory idea testing.
+- Keep quality and deployment controlled by CI + documented process.
 
 ## Scope Implemented
 
-- App routes: `/`, `/about`, `/cv`, `/publications`, `/projects`, `/blog`, `/blog/[slug]`, `/contact`
-- Content loaders with typed frontmatter validation
-- Publication filters and DOI/arXiv/PDF/DOCX/code links
-- SEO routes: sitemap, robots, RSS
-- QA stack: lint, typecheck, tests, build
-- Process controls:
-  - `npm run verify`
-  - PR template
-  - incident and runbook docs
+- App routes: `/`, `/about`, `/cv`, `/publications`, `/projects`, `/blog`, `/blog/[slug]`, `/contact`, `/experiments/dictator-game`
+- Dictator experiment:
+  - client form with demographics and amount selection
+  - per-session duplicate prevention via cookie
+  - Postgres persistence
+  - CSV export endpoint with token auth
+- Data contracts:
+  - schema validation in `lib/experiments/dictator/schema.ts`
+  - service/repository split for maintainability and testing
+- QA stack:
+  - lint, typecheck, tests, build via `npm run verify`
 
 ## Technical Architecture
 
 - Framework: Next.js App Router
 - Language: TypeScript
-- Source of truth: MDX files under `content/`
-- Parsing/validation: `gray-matter` + Zod
-- Rendering: `next-mdx-remote` v6
-- Test framework: Vitest with deterministic fixture suites
-- Deployment target: Vercel
+- Storage: Postgres (Vercel-integrated path)
+- SQL client: `postgres`
+- Migrations: SQL files + Node migration runner
+- Validation: Zod
+- Tests: Vitest (schema, service, API, sitemap)
 
-## Branch and Merge Policy
+## Deployment Requirements
 
-- `main` is PR-only.
-- Required checks before merge:
-  - `CI / validate`
-  - Vercel preview/deploy check
-- Branch must be up-to-date before merge.
-- Stale approvals are dismissed when commits change.
-- Squash merge is preferred.
-
-## Current Health
-
-Expected to pass:
-
-- `npm run verify`
+- Required env vars:
+  - `DATABASE_URL`
+  - `DICTATOR_EXPORT_TOKEN`
+- Optional env var:
+  - `DICTATOR_EXPERIMENT_SLUG`
 
 ## Key References
 
-- Incident: `docs/incidents/2026-02-13-commit-ci-regression.md`
-- Runbook: `docs/runbooks/change-validation-and-merge-policy.md`
+- Dictator runbook: `docs/runbooks/dictator-game-ops.md`
+- Merge policy runbook: `docs/runbooks/change-validation-and-merge-policy.md`
 - PR checklist template: `.github/pull_request_template.md`
