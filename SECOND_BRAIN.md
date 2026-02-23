@@ -1,46 +1,61 @@
 # Project Second Brain
 
-Last updated: February 14, 2026
+Last updated: February 23, 2026
 
 ## Snapshot
 
 - Goal: maintain and deploy a personal academic website with publication-first content and optional behavioral experiments.
-- Current branch focus: `feat/dictator-game-capture`.
-- Runtime objective: capture anonymous dictator-game responses with demographics into Postgres.
+- Current experiment objective: capture anonymous temporal-discounting responses with demographics into Postgres.
+- Public positioning objective: personal page with academic elements (not a university-lab style projects site).
 
-## Homepage UX Decision
+## Public UX Decisions
 
-- Header no longer shows personal name text.
-- Identity anchor is now in the homepage hero (`Dr. Robert Smith`).
-- Front-page featured papers are controlled by publication `highlight` flags, with deterministic priority for:
-  - `intertemporal-altruism-temporal-preferences-prosocial-behavior`
-  - `who-starts-and-who-stays-behavioral-economic-correlates`
+- Header no longer exposes a public `Projects` section.
+- `/projects` exists only as a compatibility redirect to `/about`.
+- Homepage no longer uses first-authored framing.
+- Front-page publications now use a single `Recent Publications` section.
+- Supplementary-material publication entries are excluded from homepage recent list.
+- About and Contact pages include University of Nottingham visual context.
 
 Reason:
-- clearer visual hierarchy on first load
-- simple content-side curation without code changes for most future updates
+- cleaner personal-page narrative
+- less institutional sectioning overhead
+- simpler top-level information architecture
 
-## New Capability: Dictator Game Capture
+## New Capability: Temporal Discounting Capture
 
-- Public route: `/experiments/dictator-game`
-- Submission API: `POST /api/experiments/dictator-game`
-- Export API: `GET /api/experiments/dictator-game/export`
+- Public route: `/experiments/temporal-discounting`
+- Submission API: `POST /api/experiments/temporal-discounting`
+- Export API: `GET /api/experiments/temporal-discounting/export`
 - Data flow:
-  1. user submits amount + demographics
+  1. user selects sooner/later donation timing + demographics
   2. API validates payload + honeypot
-  3. `dg_session` cookie identifies browser session
-  4. response stored in Postgres (`dictator_game_responses`)
+  3. `td_session` cookie identifies browser session
+  4. response stored in Postgres (`temporal_discounting_responses`)
   5. CSV export available via token-protected endpoint
+
+## Compatibility Layer
+
+- Legacy page route:
+  - `/experiments/dictator-game` -> permanent redirect to temporal route
+- Legacy API routes remain thin wrappers:
+  - `POST /api/experiments/dictator-game`
+  - `GET /api/experiments/dictator-game/export`
+- Env var fallback retained:
+  - `DICTATOR_EXPORT_TOKEN`
+  - `DICTATOR_EXPERIMENT_SLUG`
 
 ## Storage Design
 
-- Tables:
+- Shared session table:
   - `experiment_sessions`
+- Historical archive table (unchanged):
   - `dictator_game_responses`
-- Migration source:
+- Active task table:
+  - `temporal_discounting_responses`
+- Migrations:
   - `db/migrations/0001_dictator_game.sql`
-- Migration runner:
-  - `scripts/db/migrate.mjs`
+  - `db/migrations/0002_temporal_discounting.sql`
 
 ## Validation Baseline
 
@@ -58,10 +73,10 @@ npm run db:migrate:check
 
 - Required env vars:
   - `DATABASE_URL`
-  - `DICTATOR_EXPORT_TOKEN`
+  - `TEMPORAL_DISCOUNTING_EXPORT_TOKEN`
 - Optional env var:
-  - `DICTATOR_EXPERIMENT_SLUG`
-- Export CSV intentionally excludes raw user-agent for lower re-identification risk.
+  - `TEMPORAL_DISCOUNTING_EXPERIMENT_SLUG`
+- Contact form currently blocks real submission intentionally (UI placeholder only).
 - Solo maintenance model stays PR-first (protected `main`) with a fast self-PR path:
   - branch
   - edit
@@ -71,6 +86,7 @@ npm run db:migrate:check
 
 ## Key References
 
-- Feature ops runbook: `docs/runbooks/dictator-game-ops.md`
+- Feature ops runbook: `docs/runbooks/temporal-discounting-ops.md`
+- Deprecated dictator runbook pointer: `docs/runbooks/dictator-game-ops.md`
 - Merge policy runbook: `docs/runbooks/change-validation-and-merge-policy.md`
 - Incident record: `docs/incidents/2026-02-13-commit-ci-regression.md`

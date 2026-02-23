@@ -32,6 +32,7 @@ const publicationSchema = z.object({
     })
     .default({}),
   highlight: z.boolean().default(false),
+  draft: z.boolean().default(false),
   slug: z.string().optional()
 });
 
@@ -44,16 +45,22 @@ function comparePublications(a: PublicationEntry, b: PublicationEntry): number {
 
 export type PublicationsContentLoaderOptions = {
   publicationsDir?: string;
+  nodeEnv?: string;
 };
 
 function resolvePublicationsDir(publicationsDir?: string): string {
   return publicationsDir ?? path.join(process.cwd(), "content", "publications");
 }
 
+function isProd(nodeEnv?: string): boolean {
+  return (nodeEnv ?? process.env.NODE_ENV) === "production";
+}
+
 export function createPublicationsContentLoader(
   options: PublicationsContentLoaderOptions = {}
 ): {
   getAllPublications: () => Promise<PublicationEntry[]>;
+  getPublishedPublications: () => Promise<PublicationEntry[]>;
 } {
   const publicationsDir = resolvePublicationsDir(options.publicationsDir);
 
@@ -87,11 +94,18 @@ export function createPublicationsContentLoader(
     return items.sort(comparePublications);
   }
 
+  async function getPublishedPublications(): Promise<PublicationEntry[]> {
+    const items = await getAllPublications();
+    return items.filter((item) => !isProd(options.nodeEnv) || !item.draft);
+  }
+
   return {
-    getAllPublications
+    getAllPublications,
+    getPublishedPublications
   };
 }
 
 const defaultPublicationsLoader = createPublicationsContentLoader();
 
 export const getAllPublications = defaultPublicationsLoader.getAllPublications;
+export const getPublishedPublications = defaultPublicationsLoader.getPublishedPublications;

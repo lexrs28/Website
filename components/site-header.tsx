@@ -4,8 +4,7 @@ import Link from "next/link";
 const primaryNavItems = [
   { href: "/", label: "Home" },
   { href: "/blog", label: "Blog" },
-  { href: "/experiments/dictator-game", label: "Experiments" },
-  { href: "/projects", label: "Projects" },
+  { href: "/experiments/temporal-discounting", label: "Experiments" },
   { href: "/publications", label: "Publications" }
 ];
 

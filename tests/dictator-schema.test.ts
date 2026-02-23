@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { dictatorGameSubmissionSchema } from "@/lib/experiments/dictator/schema";
+import { temporalDiscountingSubmissionSchema } from "@/lib/experiments/temporal-discounting/schema";
 
 const validSubmission = {
-  amountGiven: 50,
+  donationTiming: "sooner",
   ageRange: "25-34",
   genderIdentity: "Woman",
   countryOrRegion: "United States",
@@ -14,23 +14,23 @@ const validSubmission = {
   honeypot: ""
 };
 
-describe("dictator game schema", () => {
+describe("temporal discounting schema", () => {
   it("accepts valid submission payload", () => {
-    const parsed = dictatorGameSubmissionSchema.parse(validSubmission);
-    expect(parsed.amountGiven).toBe(50);
+    const parsed = temporalDiscountingSubmissionSchema.parse(validSubmission);
+    expect(parsed.donationTiming).toBe("sooner");
   });
 
-  it("rejects amounts not in $5 increments", () => {
-    const result = dictatorGameSubmissionSchema.safeParse({
+  it("rejects invalid donation timing values", () => {
+    const result = temporalDiscountingSubmissionSchema.safeParse({
       ...validSubmission,
-      amountGiven: 53
+      donationTiming: "next-week"
     });
 
     expect(result.success).toBe(false);
   });
 
   it("rejects missing required demographic fields", () => {
-    const result = dictatorGameSubmissionSchema.safeParse({
+    const result = temporalDiscountingSubmissionSchema.safeParse({
       ...validSubmission,
       countryOrRegion: ""
     });
@@ -39,7 +39,7 @@ describe("dictator game schema", () => {
   });
 
   it("rejects non-empty honeypot values", () => {
-    const result = dictatorGameSubmissionSchema.safeParse({
+    const result = temporalDiscountingSubmissionSchema.safeParse({
       ...validSubmission,
       honeypot: "spam"
     });

@@ -33,6 +33,7 @@ export type PublicationEntry = {
     code?: string;
   };
   highlight: boolean;
+  draft: boolean;
   slug: string;
   content: string;
 };
