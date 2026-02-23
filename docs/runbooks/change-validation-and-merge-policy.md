@@ -69,17 +69,32 @@ git push -u origin feat/<short-change-name>
 ## Content-Only Update Recipe
 Use this for publication/blog edits that do not change app logic.
 
-1. Edit MDX files in:
+Note:
+- `/projects` is not a public section; it redirects to `/about`.
+- `content/static/projects.mdx` is retained only for internal content pipeline compatibility.
+
+1. Choose one of the two update paths:
+  - Manual file edit for:
+    - `content/publications/*.mdx`
+    - `content/blog/*.mdx`
+    - `content/static/about.mdx`
+    - `content/static/projects.mdx`
+  - Local intake app at `http://localhost:3000/local-admin` with:
+    - `CONTENT_PIPELINE_ENABLED=true`
+    - `GITHUB_TOKEN` set in `.env.local`
+2. If using manual edits, update files in:
   - `content/publications/*.mdx`
   - `content/blog/*.mdx`
-2. For homepage featured publications, set `highlight: true` in the publication frontmatter.
-3. Run:
+  - `content/static/about.mdx`
+  - `content/static/projects.mdx`
+3. For homepage featured publications, set `highlight: true` in the publication frontmatter.
+4. Run:
 
 ```bash
 npm run verify
 ```
 
-4. Open self-PR and merge when required checks pass.
+5. Open self-PR and merge when required checks pass.
 
 ## Rollback Procedure
 1. If a regression merges, create a dedicated recovery branch from `main`.

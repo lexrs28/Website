@@ -7,10 +7,9 @@ const staticRoutes = [
   "/about",
   "/cv",
   "/publications",
-  "/projects",
   "/blog",
   "/contact",
-  "/experiments/dictator-game"
+  "/experiments/temporal-discounting"
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

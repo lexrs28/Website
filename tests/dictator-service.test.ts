@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { createDictatorGameService } from "@/lib/experiments/dictator/service";
+import { createTemporalDiscountingService } from "@/lib/experiments/temporal-discounting/service";
 import type {
-  DictatorGameResponseRecord,
-  DictatorRepository,
   ExperimentSession,
-  NewDictatorGameResponse
-} from "@/lib/experiments/dictator/types";
+  NewTemporalDiscountingResponse,
+  TemporalDiscountingRepository,
+  TemporalDiscountingResponseRecord
+} from "@/lib/experiments/temporal-discounting/types";
 
 const baseSubmission = {
-  amountGiven: 25,
+  donationTiming: "sooner" as const,
   ageRange: "25-34" as const,
   genderIdentity: "Woman" as const,
   countryOrRegion: "United States",
@@ -20,13 +20,13 @@ const baseSubmission = {
   honeypot: ""
 };
 
-class InMemoryDictatorRepository implements DictatorRepository {
+class InMemoryTemporalRepository implements TemporalDiscountingRepository {
   private sessionMap = new Map<string, ExperimentSession>();
-  private responseMap = new Map<string, DictatorGameResponseRecord>();
+  private responseMap = new Map<string, TemporalDiscountingResponseRecord>();
   private nextSessionId = 1;
   private nextResponseId = 1;
 
-  public insertedRows: NewDictatorGameResponse[] = [];
+  public insertedRows: NewTemporalDiscountingResponse[] = [];
 
   async upsertExperimentSession(sessionTokenHash: string): Promise<ExperimentSession> {
     const existing = this.sessionMap.get(sessionTokenHash);
@@ -52,7 +52,7 @@ class InMemoryDictatorRepository implements DictatorRepository {
     return created;
   }
 
-  async insertDictatorGameResponse(input: NewDictatorGameResponse) {
+  async insertTemporalDiscountingResponse(input: NewTemporalDiscountingResponse) {
     this.insertedRows.push(input);
 
     const duplicateKey = `${input.sessionId}:${input.experimentSlug}`;
@@ -60,11 +60,10 @@ class InMemoryDictatorRepository implements DictatorRepository {
       return { ok: false as const, reason: "duplicate" as const };
     }
 
-    const row: DictatorGameResponseRecord = {
+    const row: TemporalDiscountingResponseRecord = {
       id: this.nextResponseId++,
       experimentSlug: input.experimentSlug,
-      amountGiven: input.amountGiven,
-      amountKept: input.amountKept,
+      donationTiming: input.donationTiming,
       ageRange: input.ageRange,
       genderIdentity: input.genderIdentity,
       countryOrRegion: input.countryOrRegion,
@@ -80,15 +79,15 @@ class InMemoryDictatorRepository implements DictatorRepository {
     return { ok: true as const, id: row.id };
   }
 
-  async listDictatorGameResponses(experimentSlug: string): Promise<DictatorGameResponseRecord[]> {
+  async listTemporalDiscountingResponses(experimentSlug: string): Promise<TemporalDiscountingResponseRecord[]> {
     return [...this.responseMap.values()].filter((row) => row.experimentSlug === experimentSlug);
   }
 }
 
-describe("dictator game service", () => {
+describe("temporal discounting service", () => {
   it("creates a new response and blocks duplicate submission for same session", async () => {
-    const repository = new InMemoryDictatorRepository();
-    const service = createDictatorGameService(repository);
+    const repository = new InMemoryTemporalRepository();
+    const service = createTemporalDiscountingService(repository);
 
     const first = await service.submitResponse({
       sessionToken: "session-token-1",
@@ -103,25 +102,24 @@ describe("dictator game service", () => {
     expect(second.status).toBe("duplicate");
   });
 
-  it("computes amount kept as endowment minus amount given", async () => {
-    const repository = new InMemoryDictatorRepository();
-    const service = createDictatorGameService(repository);
+  it("persists sooner/later donation timing choice", async () => {
+    const repository = new InMemoryTemporalRepository();
+    const service = createTemporalDiscountingService(repository);
 
     await service.submitResponse({
       sessionToken: "session-token-2",
       submission: {
         ...baseSubmission,
-        amountGiven: 70
+        donationTiming: "later"
       }
     });
 
-    expect(repository.insertedRows[0]?.amountGiven).toBe(70);
-    expect(repository.insertedRows[0]?.amountKept).toBe(30);
+    expect(repository.insertedRows[0]?.donationTiming).toBe("later");
   });
 
   it("serializes export rows to CSV", async () => {
-    const repository = new InMemoryDictatorRepository();
-    const service = createDictatorGameService(repository);
+    const repository = new InMemoryTemporalRepository();
+    const service = createTemporalDiscountingService(repository);
 
     await service.submitResponse({
       sessionToken: "session-token-3",
@@ -132,6 +130,7 @@ describe("dictator game service", () => {
     const csv = service.toCsv(rows);
 
     expect(csv).toContain("experiment_slug");
-    expect(csv).toContain("dictator-game-v1");
+    expect(csv).toContain("donation_timing");
+    expect(csv).toContain("temporal-discounting-v1");
   });
 });

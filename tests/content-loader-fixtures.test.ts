@@ -34,12 +34,16 @@ describe("content loader fixtures", () => {
 
   it("loads publication fixtures with root-relative asset links", async () => {
     const loader = createPublicationsContentLoader({
-      publicationsDir: path.join(FIXTURES_ROOT, "publications")
+      publicationsDir: path.join(FIXTURES_ROOT, "publications"),
+      nodeEnv: "production"
     });
 
     const publications = await loader.getAllPublications();
+    const published = await loader.getPublishedPublications();
 
-    expect(publications).toHaveLength(2);
+    expect(publications).toHaveLength(3);
+    expect(published).toHaveLength(2);
+    expect(published.map((item) => item.slug)).not.toContain("paper-draft");
     const journal = publications.find((item) => item.slug === "paper-a");
     expect(journal?.links.pdf).toBe("/publications/fixture-journal-paper.pdf");
     expect(journal?.links.docx).toBe("/publications/fixture-journal-paper.docx");

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PublicationsList } from "@/components/publications-list";
-import { getAllPublications } from "@/lib/content/publications";
+import { getPublishedPublications } from "@/lib/content/publications";
 
 export const metadata: Metadata = {
   title: "Publications",
@@ -8,14 +8,14 @@ export const metadata: Metadata = {
 };
 
 export default async function PublicationsPage() {
-  const publications = await getAllPublications();
+  const publications = await getPublishedPublications();
 
   return (
     <div className="page-stack">
       <h1>Publications</h1>
       <p>
-        This work centers on first-authored studies of blood donor behavior, including intertemporal altruism and
-        behavioral-economic predictors of donor initiation and retention.
+        Recent publications on blood donor behavior, intertemporal altruism, and behavioral-economic predictors of
+        donor initiation and retention.
       </p>
       <PublicationsList publications={publications} />
     </div>
